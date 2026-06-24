@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../core/constants/app_colors.dart';
 
 /// Empty State Widget - hiển thị khi không có dữ liệu
@@ -194,15 +195,18 @@ class QuantitySelector extends StatelessWidget {
                 : null,
           ),
           // Quantity display
-          SizedBox(
-            width: size,
-            child: Text(
-              '$quantity',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Poppins',
+          GestureDetector(
+            onTap: () => _showQuantityDialog(context),
+            child: SizedBox(
+              width: size,
+              child: Text(
+                '$quantity',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Poppins',
+                ),
               ),
             ),
           ),
@@ -216,6 +220,95 @@ class QuantitySelector extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _showQuantityDialog(BuildContext context) async {
+    final TextEditingController textController = TextEditingController(text: quantity.toString());
+    
+    final int? result = await showDialog<int>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Nhập số lượng', style: TextStyle(fontFamily: 'Poppins', fontSize: 18)),
+          content: TextField(
+            controller: textController,
+            keyboardType: TextInputType.number,
+            textAlign: TextAlign.center,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            ),
+            autofocus: true,
+            onSubmitted: (value) {
+              final parsed = int.tryParse(value);
+              if (parsed != null) Navigator.pop(context, parsed);
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Hủy', style: TextStyle(color: AppColors.grey, fontFamily: 'Poppins')),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final value = int.tryParse(textController.text);
+                if (value != null) {
+                  Navigator.pop(context, value);
+                } else {
+                  Navigator.pop(context);
+                }
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+              child: const Text('Xác nhận', style: TextStyle(color: Colors.white, fontFamily: 'Poppins')),
+            ),
+          ],
+        );
+      },
+    );
+
+    textController.dispose();
+
+    if (result != null) {
+      int newQuantity = result;
+      bool showMaxWarning = false;
+      bool showMinWarning = false;
+
+      if (newQuantity < minQuantity) {
+        newQuantity = minQuantity;
+        showMinWarning = true;
+      }
+      if (newQuantity > maxQuantity) {
+        newQuantity = maxQuantity;
+        showMaxWarning = true;
+      }
+
+      if (newQuantity != quantity) {
+        onChanged(newQuantity);
+      }
+
+      // Đợi một chút để Dialog đóng hoàn toàn trước khi hiện Snackbar để tránh lỗi overlay
+      await Future.delayed(const Duration(milliseconds: 300));
+      
+      if (showMaxWarning) {
+        Get.snackbar(
+          'Thông báo',
+          'Số lượng tối đa có thể mua là $maxQuantity',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
+        );
+      } else if (showMinWarning) {
+        Get.snackbar(
+          'Thông báo',
+          'Số lượng tối thiểu là $minQuantity',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
+        );
+      }
+    }
   }
 
   Widget _buildButton({

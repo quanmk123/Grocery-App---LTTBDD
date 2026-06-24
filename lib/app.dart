@@ -4,6 +4,14 @@ import 'core/routes/app_pages.dart';
 import 'core/routes/app_routes.dart';
 import 'core/themes/light_theme.dart';
 import 'core/themes/dark_theme.dart';
+import 'core/storage/local_storage.dart';
+
+/// Đọc theme đã lưu từ LocalStorage
+ThemeMode _getInitialThemeMode() {
+  final mode = LocalStorage.themeMode;
+  if (mode == 2) return ThemeMode.dark;
+  return ThemeMode.light;
+}
 
 /// App Widget - Entry point của ứng dụng
 class GroceryApp extends StatelessWidget {
@@ -18,7 +26,7 @@ class GroceryApp extends StatelessWidget {
       // Themes
       theme: lightTheme(),
       darkTheme: darkTheme(),
-      themeMode: ThemeMode.light,
+      themeMode: _getInitialThemeMode(),
 
       // Routes
       initialRoute: AppRoutes.splash,

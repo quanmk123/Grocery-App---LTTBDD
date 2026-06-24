@@ -6,6 +6,7 @@ import '../constants/app_colors.dart';
 ThemeData darkTheme() {
   return ThemeData(
     useMaterial3: true,
+    fontFamily: 'Poppins',
     brightness: Brightness.dark,
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.primary,

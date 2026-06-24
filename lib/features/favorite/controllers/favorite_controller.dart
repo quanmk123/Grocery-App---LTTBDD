@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/models/product_model.dart';
 import '../../../data/repositories/favorite_repository.dart';
-
+import '../../../core/routes/app_routes.dart';
+import '../../../core/storage/local_storage.dart';
 /// Favorite Controller
 class FavoriteController extends GetxController {
   final FavoriteRepository _repo = FavoriteRepository();
@@ -24,6 +25,11 @@ class FavoriteController extends GetxController {
   bool isFavorite(String productId) => favoriteIds.contains(productId);
 
   Future<void> toggleFavorite(ProductModel product) async {
+    if (!LocalStorage.isLoggedIn) {
+      Get.toNamed(AppRoutes.login);
+      Get.snackbar('Thông báo', 'Vui lòng đăng nhập để thêm vào yêu thích!', snackPosition: SnackPosition.TOP);
+      return;
+    }
     favoriteIds.value =
         await _repo.toggleFavorite(List.from(favoriteIds), product.id);
     favoriteProducts.value = _repo.getFavoriteProducts(favoriteIds);

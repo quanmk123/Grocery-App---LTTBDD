@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/models/product_model.dart';
 import '../../../data/repositories/favorite_repository.dart';
+import '../../../data/repositories/product_repository.dart';
 import '../../cart/controllers/cart_controller.dart';
+import '../../../core/routes/app_routes.dart';
+import '../../../core/storage/local_storage.dart';
 
 /// Product Controller - chi tiết sản phẩm
 class ProductController extends GetxController {
@@ -24,6 +27,16 @@ class ProductController extends GetxController {
     favoriteIds.value = _favoriteRepo.loadFavoriteIds();
   }
 
+  Future<void> refreshData() async {
+    if (product.value != null) {
+      final repo = ProductRepository();
+      final updatedProduct = await repo.getProductById(product.value!.id);
+      if (updatedProduct != null) {
+        product.value = updatedProduct;
+      }
+    }
+  }
+
   bool get isFavorite =>
       product.value != null && favoriteIds.contains(product.value!.id);
 
@@ -41,29 +54,32 @@ class ProductController extends GetxController {
   }
 
   Future<void> addToCart() async {
+    if (!LocalStorage.isLoggedIn) {
+      Get.toNamed(AppRoutes.login);
+      Get.snackbar('Thông báo', 'Vui lòng đăng nhập để thêm vào giỏ hàng!', snackPosition: SnackPosition.TOP);
+      return;
+    }
     if (product.value == null) return;
     if (product.value!.isOutOfStock) return;
 
     try {
       final cartController = Get.find<CartController>();
       await cartController.addToCart(product.value!, quantity.value);
-      Get.snackbar(
-        '',
-        '🛒 Đã thêm ${product.value!.name} vào giỏ hàng!',
-        snackPosition: SnackPosition.BOTTOM,
-        margin: const EdgeInsets.all(16),
-        duration: const Duration(seconds: 2),
-      );
     } catch (e) {
       Get.snackbar('Lỗi', e.toString(), snackPosition: SnackPosition.TOP);
     }
   }
 
   Future<void> toggleFavorite() async {
+    if (!LocalStorage.isLoggedIn) {
+      Get.toNamed(AppRoutes.login);
+      Get.snackbar('Thông báo', 'Vui lòng đăng nhập để thêm vào yêu thích!', snackPosition: SnackPosition.TOP);
+      return;
+    }
     if (product.value == null) return;
     favoriteIds.value = await _favoriteRepo.toggleFavorite(
         List.from(favoriteIds), product.value!.id);
-    product.value!.isFavorite = isFavorite;
+    product.value = product.value!.copyWith(isFavorite: isFavorite);
 
     Get.snackbar(
       '',

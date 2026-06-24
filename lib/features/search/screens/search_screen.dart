@@ -6,6 +6,7 @@ import '../../../shared/widgets/product_card.dart';
 import '../../cart/controllers/cart_controller.dart';
 import '../../favorite/controllers/favorite_controller.dart';
 import '../controllers/search_controller.dart' as sc;
+import '../widgets/filter_bottom_sheet.dart';
 
 /// Search Screen
 class SearchScreen extends GetView<sc.SearchController> {
@@ -13,8 +14,7 @@ class SearchScreen extends GetView<sc.SearchController> {
 
   @override
   Widget build(BuildContext context) {
-    final textController =
-        TextEditingController(text: controller.searchQuery.value);
+    final textController = controller.textController;
 
     return Scaffold(
       backgroundColor: AppColors.greyBackground,
@@ -45,6 +45,15 @@ class SearchScreen extends GetView<sc.SearchController> {
           textInputAction: TextInputAction.search,
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.tune, color: AppColors.primary),
+            onPressed: () {
+              Get.bottomSheet(
+                FilterBottomSheet(controller: controller),
+                isScrollControlled: true,
+              );
+            },
+          ),
           TextButton(
             onPressed: () => Get.back(),
             child: const Text(

@@ -115,46 +115,6 @@ class OrderDetailScreen extends GetView<OrderController> {
               fontFamily: 'Poppins',
             ),
           ),
-          // Demo: Update status buttons
-          if (order.status != OrderStatus.cancelled &&
-              order.status != OrderStatus.completed) ...[
-            const SizedBox(height: 12),
-            const Divider(),
-            const SizedBox(height: 8),
-            const Text(
-              '⚡ Demo: Cập nhật trạng thái',
-              style: TextStyle(
-                fontSize: 12,
-                color: AppColors.textHint,
-                fontFamily: 'Poppins',
-              ),
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: _getNextStatuses(order.status)
-                  .map((s) => GestureDetector(
-                        onTap: () => controller.updateStatus(order.id, s),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: AppColors.primary),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            s.label,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: AppColors.primary,
-                              fontFamily: 'Poppins',
-                            ),
-                          ),
-                        ),
-                      ))
-                  .toList(),
-            ),
-          ],
         ],
       ),
     );

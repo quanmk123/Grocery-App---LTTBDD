@@ -34,17 +34,36 @@ class AddressRepository {
     List<AddressModel> current,
     AddressModel address,
   ) async {
-    final addresses = List<AddressModel>.from(current);
+    var addresses = List<AddressModel>.from(current);
     final newAddr = address.copyWith(id: _uuid.v4());
 
     if (newAddr.isDefault) {
       // Bỏ default cũ
-      for (var a in addresses) {
-        a.isDefault = false;
-      }
+      addresses = addresses.map((a) => a.copyWith(isDefault: false)).toList();
     }
 
     addresses.add(newAddr);
+    await _saveAddresses(addresses);
+    return addresses;
+  }
+
+  /// Cập nhật địa chỉ
+  Future<List<AddressModel>> updateAddress(
+    List<AddressModel> current,
+    AddressModel address,
+  ) async {
+    var addresses = List<AddressModel>.from(current);
+    
+    if (address.isDefault) {
+      // Bỏ default cũ
+      addresses = addresses.map((a) => a.copyWith(isDefault: false)).toList();
+    }
+
+    final index = addresses.indexWhere((a) => a.id == address.id);
+    if (index != -1) {
+      addresses[index] = address;
+    }
+    
     await _saveAddresses(addresses);
     return addresses;
   }
@@ -64,10 +83,9 @@ class AddressRepository {
     List<AddressModel> current,
     String addressId,
   ) async {
-    final addresses = current.map((a) {
-      a.isDefault = a.id == addressId;
-      return a;
-    }).toList();
+    final addresses = current
+        .map((a) => a.copyWith(isDefault: a.id == addressId))
+        .toList();
     await _saveAddresses(addresses);
     return addresses;
   }

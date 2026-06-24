@@ -8,6 +8,9 @@ import '../../cart/screens/cart_screen.dart';
 import '../../order/screens/orders_screen.dart';
 import '../../profile/screens/profile_screen.dart';
 import '../../cart/controllers/cart_controller.dart';
+import '../../../core/routes/app_routes.dart';
+import '../../../core/storage/local_storage.dart';
+import '../controllers/main_controller.dart';
 
 /// Main Screen - Bottom Navigation Bar
 class MainScreen extends StatefulWidget {
@@ -18,12 +21,21 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0;
+  final MainController _controller = Get.find<MainController>();
 
-  final List<Widget> _screens = [
-    const HomeScreen(),
+  late final List<Widget> _screens = [
+    HomeScreen(onProfileTap: () {
+      if (!LocalStorage.isLoggedIn) {
+        Get.toNamed(AppRoutes.login);
+        Get.snackbar('Thông báo', 'Vui lòng đăng nhập để xem thông tin này!', snackPosition: SnackPosition.TOP);
+        return;
+      }
+      _controller.changeTab(4);
+    }),
     const CategoryScreen(),
-    const CartScreen(),
+    CartScreen(onHomeTap: () {
+      _controller.changeTab(0);
+    }),
     const OrdersScreen(),
     const ProfileScreen(),
   ];
@@ -31,10 +43,10 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
+      body: Obx(() => IndexedStack(
+        index: _controller.currentIndex.value,
         children: _screens,
-      ),
+      )),
       bottomNavigationBar: _buildBottomNav(),
     );
   }
@@ -42,7 +54,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildBottomNav() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).bottomNavigationBarTheme.backgroundColor ?? Theme.of(context).cardColor,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
@@ -70,103 +82,109 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildNavItem(int index, IconData activeIcon, IconData inactiveIcon, String label) {
-    final isActive = _currentIndex == index;
-    return GestureDetector(
-      onTap: () => setState(() => _currentIndex = index),
-      behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: isActive ? AppColors.primarySurface : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              isActive ? activeIcon : inactiveIcon,
-              color: isActive ? AppColors.primary : AppColors.grey,
-              size: 24,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+    return Obx(() {
+      final isActive = _controller.currentIndex.value == index;
+      return GestureDetector(
+        onTap: () {
+          if (!LocalStorage.isLoggedIn && (index == 2 || index == 3 || index == 4)) {
+            Get.toNamed(AppRoutes.login);
+            Get.snackbar('Thông báo', 'Vui lòng đăng nhập để xem thông tin này!', snackPosition: SnackPosition.TOP);
+            return;
+          }
+          _controller.changeTab(index);
+        },
+        behavior: HitTestBehavior.opaque,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: isActive ? AppColors.primarySurface : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                isActive ? activeIcon : inactiveIcon,
                 color: isActive ? AppColors.primary : AppColors.grey,
-                fontFamily: 'Poppins',
+                size: 24,
               ),
-            ),
-          ],
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isActive ? AppColors.primary : AppColors.grey,
+                  fontSize: 10,
+                  fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                  fontFamily: 'Poppins',
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildCartNavItem() {
-    return GetBuilder<CartController>(
-      builder: (cartController) {
-        final count = cartController.totalItems;
-        return GestureDetector(
-          onTap: () => setState(() => _currentIndex = 2),
-          behavior: HitTestBehavior.opaque,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: _currentIndex == 2
-                  ? AppColors.primarySurface
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                badges.Badge(
-                  showBadge: count > 0,
-                  badgeContent: Text(
-                    count > 99 ? '99+' : '$count',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 9,
-                      fontFamily: 'Poppins',
-                    ),
-                  ),
-                  badgeStyle: const badges.BadgeStyle(
-                    badgeColor: AppColors.error,
-                    padding: EdgeInsets.all(4),
-                  ),
-                  child: Icon(
-                    _currentIndex == 2
-                        ? Icons.shopping_cart_rounded
-                        : Icons.shopping_cart_outlined,
-                    color: _currentIndex == 2
-                        ? AppColors.primary
-                        : AppColors.grey,
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Giỏ hàng',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: _currentIndex == 2
-                        ? FontWeight.w600
-                        : FontWeight.w400,
-                    color: _currentIndex == 2
-                        ? AppColors.primary
-                        : AppColors.grey,
+    final cartController = Get.find<CartController>();
+    return Obx(() {
+      final isActive = _controller.currentIndex.value == 2;
+      final count = cartController.totalItems;
+      return GestureDetector(
+        onTap: () {
+          if (!LocalStorage.isLoggedIn) {
+            Get.toNamed(AppRoutes.login);
+            Get.snackbar('Thông báo', 'Vui lòng đăng nhập để xem thông tin này!', snackPosition: SnackPosition.TOP);
+            return;
+          }
+          _controller.changeTab(2);
+        },
+        behavior: HitTestBehavior.opaque,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: isActive ? AppColors.primarySurface : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              badges.Badge(
+                showBadge: count > 0,
+                badgeContent: Text(
+                  count > 99 ? '99+' : '$count',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 9,
                     fontFamily: 'Poppins',
                   ),
                 ),
-              ],
-            ),
+                badgeStyle: const badges.BadgeStyle(
+                  badgeColor: AppColors.error,
+                  padding: EdgeInsets.all(4),
+                ),
+                child: Icon(
+                  isActive ? Icons.shopping_cart_rounded : Icons.shopping_cart_outlined,
+                  color: isActive ? AppColors.primary : AppColors.grey,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Giỏ hàng',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                  color: isActive ? AppColors.primary : AppColors.grey,
+                  fontFamily: 'Poppins',
+                ),
+              ),
+            ],
           ),
-        );
-      },
-    );
+        ),
+      );
+    });
   }
 }

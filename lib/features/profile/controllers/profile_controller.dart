@@ -18,7 +18,12 @@ class ProfileController extends GetxController {
   void onInit() {
     super.onInit();
     loadUser();
-    isDarkMode.value = LocalStorage.themeMode == 2;
+    final mode = LocalStorage.themeMode;
+    if (mode == 2) {
+      isDarkMode.value = true;
+    } else {
+      isDarkMode.value = false;
+    }
   }
 
   void loadUser() {

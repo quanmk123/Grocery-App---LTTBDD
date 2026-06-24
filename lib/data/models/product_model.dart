@@ -12,7 +12,7 @@ class ProductModel {
   final double rating;
   final int reviewCount;
   final int stock;
-  bool isFavorite;
+  final bool isFavorite;
 
   // Tags để phân loại
   final bool isFlashSale;

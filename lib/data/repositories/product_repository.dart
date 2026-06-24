@@ -10,6 +10,18 @@ class ProductRepository {
     return List.from(MockData.products);
   }
 
+  /// Cập nhật số lượng tồn kho (sau khi mua)
+  Future<void> updateStock(String productId, int quantityToSubtract) async {
+    final index = MockData.products.indexWhere((p) => p.id == productId);
+    if (index != -1) {
+      final currentStock = MockData.products[index].stock;
+      final newStock = currentStock - quantityToSubtract;
+      MockData.products[index] = MockData.products[index].copyWith(
+        stock: newStock > 0 ? newStock : 0,
+      );
+    }
+  }
+
   /// Lấy sản phẩm theo category
   Future<List<ProductModel>> getProductsByCategory(String categoryId) async {
     await Future.delayed(const Duration(milliseconds: 300));
@@ -49,16 +61,65 @@ class ProductRepository {
   }
 
   /// Tìm kiếm sản phẩm theo từ khóa
-  Future<List<ProductModel>> searchProducts(String query) async {
+  Future<List<ProductModel>> searchProducts(
+    String query, {
+    double? minPrice,
+    double? maxPrice,
+    String? categoryId,
+    String? sortBy, // 'price_asc', 'price_desc', 'rating_desc'
+  }) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    if (query.trim().isEmpty) return [];
+    
+    // Nếu query rỗng và không có filter nào, trả về rỗng (hoặc tất cả, tùy logic. Hiện tại trả về rỗng theo code cũ)
+    if (query.trim().isEmpty && minPrice == null && maxPrice == null && categoryId == null) {
+      return [];
+    }
+
     final q = query.toLowerCase().trim();
-    return MockData.products
-        .where((p) =>
-            p.name.toLowerCase().contains(q) ||
+    
+    var results = MockData.products.where((p) {
+      // 1. Text match
+      bool matchesQuery = true;
+      if (q.isNotEmpty) {
+        matchesQuery = p.name.toLowerCase().contains(q) ||
             p.categoryName.toLowerCase().contains(q) ||
-            p.description.toLowerCase().contains(q))
-        .toList();
+            p.description.toLowerCase().contains(q);
+      }
+
+      // 2. Category match
+      bool matchesCategory = true;
+      if (categoryId != null && categoryId.isNotEmpty) {
+        matchesCategory = p.categoryId == categoryId;
+      }
+
+      // 3. Price match
+      bool matchesPrice = true;
+      if (minPrice != null) {
+        matchesPrice = matchesPrice && (p.price >= minPrice);
+      }
+      if (maxPrice != null) {
+        matchesPrice = matchesPrice && (p.price <= maxPrice);
+      }
+
+      return matchesQuery && matchesCategory && matchesPrice;
+    }).toList();
+
+    // 4. Sorting
+    if (sortBy != null) {
+      switch (sortBy) {
+        case 'price_asc':
+          results.sort((a, b) => a.price.compareTo(b.price));
+          break;
+        case 'price_desc':
+          results.sort((a, b) => b.price.compareTo(a.price));
+          break;
+        case 'rating_desc':
+          results.sort((a, b) => b.rating.compareTo(a.rating));
+          break;
+      }
+    }
+
+    return results;
   }
 
   /// Lấy banners

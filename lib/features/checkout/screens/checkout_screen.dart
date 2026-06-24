@@ -5,6 +5,7 @@ import '../../../core/routes/app_routes.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../data/models/order_model.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/dialogs/confirm_dialog.dart';
 import '../../cart/controllers/cart_controller.dart';
 import '../controllers/checkout_controller.dart';
 
@@ -72,7 +73,16 @@ class CheckoutScreen extends GetView<CheckoutController> {
                   text: 'Đặt hàng ngay',
                   isLoading: controller.isLoading.value,
                   icon: Icons.check_circle_outline,
-                  onPressed: controller.placeOrder,
+                  onPressed: () {
+                    ConfirmDialog.show(
+                      title: 'Xác nhận đặt hàng',
+                      message: 'Bạn có chắc chắn muốn tiến hành đặt hàng không?',
+                      confirmText: 'Đặt hàng',
+                      confirmColor: AppColors.primary,
+                      icon: Icons.shopping_bag_outlined,
+                      onConfirm: controller.placeOrder,
+                    );
+                  },
                 )),
             const SizedBox(height: 24),
           ],

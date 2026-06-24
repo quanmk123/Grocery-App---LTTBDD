@@ -9,12 +9,12 @@ import '../controllers/home_controller.dart';
 
 /// Home Screen - màn hình chính
 class HomeScreen extends GetView<HomeController> {
-  const HomeScreen({super.key});
+  final VoidCallback? onProfileTap;
+  const HomeScreen({super.key, this.onProfileTap});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.greyBackground,
       body: SafeArea(
         child: Obx(() {
           if (controller.isLoading.value) {
@@ -28,7 +28,7 @@ class HomeScreen extends GetView<HomeController> {
             child: CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(child: _buildHeader(context)),
-                SliverToBoxAdapter(child: _buildSearchBar()),
+                SliverToBoxAdapter(child: _buildSearchBar(context)),
                 SliverToBoxAdapter(child: _buildBanners()),
                 SliverToBoxAdapter(child: _buildCategories()),
                 SliverToBoxAdapter(child: _buildFlashSale()),
@@ -47,7 +47,7 @@ class HomeScreen extends GetView<HomeController> {
   Widget _buildHeader(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      color: Colors.white,
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: Row(
         children: [
           Expanded(
@@ -56,18 +56,18 @@ class HomeScreen extends GetView<HomeController> {
               children: [
                 Text(
                   controller.greeting,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
-                    color: AppColors.textSecondary,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                     fontFamily: 'Poppins',
                   ),
                 ),
                 Obx(() => Text(
                       controller.userName,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
+                        color: Theme.of(context).textTheme.titleLarge?.color,
                         fontFamily: 'Poppins',
                       ),
                     )),
@@ -91,7 +91,7 @@ class HomeScreen extends GetView<HomeController> {
           const SizedBox(width: 10),
           // Avatar
           GestureDetector(
-            onTap: () {},
+            onTap: onProfileTap ?? () {},
             child: Container(
               width: 44,
               height: 44,
@@ -109,14 +109,14 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  Widget _buildSearchBar() {
+  Widget _buildSearchBar(BuildContext context) {
     return GestureDetector(
       onTap: () => Get.toNamed(AppRoutes.search),
       child: Container(
         margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
@@ -138,13 +138,16 @@ class HomeScreen extends GetView<HomeController> {
               ),
             ),
             const Spacer(),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.primarySurface,
-                borderRadius: BorderRadius.circular(8),
+            GestureDetector(
+              onTap: () => Get.toNamed(AppRoutes.search, arguments: {'openFilter': true}),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: AppColors.primarySurface,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.tune, color: AppColors.primary, size: 18),
               ),
-              child: const Icon(Icons.tune, color: AppColors.primary, size: 18),
             ),
           ],
         ),

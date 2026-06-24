@@ -62,7 +62,7 @@ class OnboardingController extends GetxController {
 
   Future<void> _finishOnboarding() async {
     await LocalStorage.setOnboardingSeen(true);
-    Get.offAllNamed(AppRoutes.login);
+    Get.offAllNamed(AppRoutes.main);
   }
 
   @override

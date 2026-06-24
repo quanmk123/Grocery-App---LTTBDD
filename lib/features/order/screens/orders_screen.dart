@@ -14,7 +14,6 @@ class OrdersScreen extends GetView<OrderController> {
   static const List<Map<String, dynamic>> tabs = [
     {'label': 'Tất cả', 'status': null},
     {'label': 'Chờ xác nhận', 'status': OrderStatus.pending},
-    {'label': 'Xác nhận', 'status': OrderStatus.confirmed},
     {'label': 'Chuẩn bị', 'status': OrderStatus.preparing},
     {'label': 'Đang giao', 'status': OrderStatus.shipping},
     {'label': 'Đã giao', 'status': OrderStatus.delivered},

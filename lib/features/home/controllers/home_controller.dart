@@ -4,16 +4,17 @@ import '../../../data/models/product_model.dart';
 import '../../../data/models/category_model.dart';
 import '../../../data/repositories/product_repository.dart';
 import '../../../data/repositories/favorite_repository.dart';
-import '../../../data/repositories/cart_repository.dart';
+import '../../cart/controllers/cart_controller.dart';
 import '../../../data/models/user_model.dart';
 import '../../../data/repositories/auth_repository.dart';
-
+import '../../../core/routes/app_routes.dart';
+import '../../../core/storage/local_storage.dart';
 /// Home Controller - quản lý dữ liệu màn hình Home
 class HomeController extends GetxController {
   final _productRepo = ProductRepository();
   final _categoryRepo = CategoryRepository();
   final _favoriteRepo = FavoriteRepository();
-  final _cartRepo = CartRepository();
+  final _cartController = Get.find<CartController>();
   final _authRepo = AuthRepository();
 
   final isLoading = true.obs;
@@ -27,8 +28,7 @@ class HomeController extends GetxController {
   final cartItems = <dynamic>[].obs;
   final currentUser = Rxn<UserModel>();
 
-  int get cartCount => _cartRepo.loadCart()
-      .fold(0, (sum, item) => sum + item.quantity);
+  int get cartCount => _cartController.totalItems;
 
   @override
   void onInit() {
@@ -71,35 +71,35 @@ class HomeController extends GetxController {
   }
 
   void _updateFavoriteStatus() {
-    void update(List<ProductModel> list) {
-      for (var p in list) {
-        p.isFavorite = favoriteIds.contains(p.id);
-      }
+    List<ProductModel> update(List<ProductModel> list) {
+      return list
+          .map((p) => p.copyWith(isFavorite: favoriteIds.contains(p.id)))
+          .toList();
     }
 
-    update(flashSaleProducts);
-    update(bestSellerProducts);
-    update(recommendedProducts);
-    update(newProducts);
+    flashSaleProducts.value = update(flashSaleProducts);
+    bestSellerProducts.value = update(bestSellerProducts);
+    recommendedProducts.value = update(recommendedProducts);
+    newProducts.value = update(newProducts);
   }
 
   bool isFavorite(String productId) => favoriteIds.contains(productId);
 
   /// Toggle yêu thích sản phẩm
   Future<void> toggleFavorite(ProductModel product) async {
+    if (!LocalStorage.isLoggedIn) {
+      Get.toNamed(AppRoutes.login);
+      Get.snackbar('Thông báo', 'Vui lòng đăng nhập để thêm vào yêu thích!', snackPosition: SnackPosition.TOP);
+      return;
+    }
     final repo = FavoriteRepository();
     favoriteIds.value = await repo.toggleFavorite(
       List.from(favoriteIds),
       product.id,
     );
-    product.isFavorite = favoriteIds.contains(product.id);
 
     // Refresh các list
     _updateFavoriteStatus();
-    flashSaleProducts.refresh();
-    bestSellerProducts.refresh();
-    recommendedProducts.refresh();
-    newProducts.refresh();
 
     Get.snackbar(
       '',
@@ -112,17 +112,14 @@ class HomeController extends GetxController {
 
   /// Thêm sản phẩm vào giỏ hàng nhanh
   Future<void> quickAddToCart(ProductModel product) async {
+    if (!LocalStorage.isLoggedIn) {
+      Get.toNamed(AppRoutes.login);
+      Get.snackbar('Thông báo', 'Vui lòng đăng nhập để thêm vào giỏ hàng!', snackPosition: SnackPosition.TOP);
+      return;
+    }
     if (product.isOutOfStock) return;
     try {
-      final currentCart = _cartRepo.loadCart();
-      await _cartRepo.addToCart(currentCart, product, 1);
-      Get.snackbar(
-        '',
-        '🛒 Đã thêm ${product.name} vào giỏ hàng!',
-        snackPosition: SnackPosition.BOTTOM,
-        margin: const EdgeInsets.all(16),
-        duration: const Duration(seconds: 2),
-      );
+      await _cartController.addToCart(product, 1);
     } catch (e) {
       Get.snackbar('Lỗi', e.toString(), snackPosition: SnackPosition.TOP);
     }

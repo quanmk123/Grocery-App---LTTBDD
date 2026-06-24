@@ -65,7 +65,7 @@ class ConfirmDialog extends StatelessWidget {
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () => Get.back(),
+                    onPressed: () => Navigator.pop(context),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: AppColors.greyLight),
                       shape: RoundedRectangleBorder(
@@ -87,7 +87,7 @@ class ConfirmDialog extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      Get.back();
+                      Navigator.pop(context);
                       onConfirm();
                     },
                     style: ElevatedButton.styleFrom(

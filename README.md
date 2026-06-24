@@ -1,17 +1,26 @@
-# grocery_app
+# Grocery App
 
-A new Flutter project.
+Ứng dụng mua sắm thực phẩm bằng Flutter, sử dụng dữ liệu mock và SharedPreferences.
 
-## Getting Started
+## Chức năng chính
+- Onboarding
+- Đăng nhập / đăng ký
+- Xem danh mục sản phẩm
+- Tìm kiếm sản phẩm
+- Yêu thích sản phẩm
+- Giỏ hàng
+- Thanh toán COD
+- Quản lý đơn hàng
+- Hồ sơ người dùng
+- Đổi giao diện sáng/tối
 
-This project is a starting point for a Flutter application.
+## Công nghệ
+- Flutter
+- Dart
+- GetX
+- SharedPreferences
+- Mock Data
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Tài khoản demo
+Email: user@gmail.com
+Password: 123456

@@ -28,10 +28,7 @@ class FavoriteRepository {
   List<ProductModel> getFavoriteProducts(List<String> favoriteIds) {
     return MockData.products
         .where((p) => favoriteIds.contains(p.id))
-        .map((p) {
-          p.isFavorite = true;
-          return p;
-        })
+        .map((p) => p.copyWith(isFavorite: true))
         .toList();
   }
 

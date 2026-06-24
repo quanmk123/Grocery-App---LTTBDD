@@ -14,18 +14,21 @@ class AddAddressScreen extends GetView<CheckoutController> {
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
-    final nameCtrl = TextEditingController();
-    final phoneCtrl = TextEditingController();
-    final cityCtrl = TextEditingController();
-    final districtCtrl = TextEditingController();
-    final wardCtrl = TextEditingController();
-    final detailCtrl = TextEditingController();
-    final isDefault = false.obs;
+    final AddressModel? existingAddress = Get.arguments as AddressModel?;
+    final isEditing = existingAddress != null;
+
+    final nameCtrl = TextEditingController(text: existingAddress?.fullName ?? '');
+    final phoneCtrl = TextEditingController(text: existingAddress?.phone ?? '');
+    final cityCtrl = TextEditingController(text: existingAddress?.city ?? '');
+    final districtCtrl = TextEditingController(text: existingAddress?.district ?? '');
+    final wardCtrl = TextEditingController(text: existingAddress?.ward ?? '');
+    final detailCtrl = TextEditingController(text: existingAddress?.detailAddress ?? '');
+    final isDefault = (existingAddress?.isDefault ?? false).obs;
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Thêm địa chỉ mới'),
+        title: Text(isEditing ? 'Sửa địa chỉ' : 'Thêm địa chỉ mới'),
         centerTitle: true,
         backgroundColor: Colors.white,
       ),
@@ -108,8 +111,8 @@ class AddAddressScreen extends GetView<CheckoutController> {
                 icon: Icons.save_outlined,
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
-                    final address = AddressModel(
-                      id: const Uuid().v4(),
+                    final addr = AddressModel(
+                      id: isEditing ? existingAddress.id : const Uuid().v4(),
                       fullName: nameCtrl.text.trim(),
                       phone: phoneCtrl.text.trim(),
                       city: cityCtrl.text.trim(),
@@ -118,7 +121,11 @@ class AddAddressScreen extends GetView<CheckoutController> {
                       detailAddress: detailCtrl.text.trim(),
                       isDefault: isDefault.value,
                     );
-                    controller.addAddress(address);
+                    if (isEditing) {
+                      controller.updateAddress(addr);
+                    } else {
+                      controller.addAddress(addr);
+                    }
                   }
                 },
               ),

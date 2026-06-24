@@ -11,12 +11,12 @@ class RegisterScreen extends GetView<AuthController> {
 
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
-    final nameController = TextEditingController();
-    final emailController = TextEditingController();
-    final phoneController = TextEditingController();
-    final passwordController = TextEditingController();
-    final confirmPasswordController = TextEditingController();
+    final formKey = controller.registerFormKey;
+    final nameController = controller.nameController;
+    final emailController = controller.registerEmailController;
+    final phoneController = controller.phoneController;
+    final passwordController = controller.registerPasswordController;
+    final confirmPasswordController = controller.confirmPasswordController;
 
     return Scaffold(
       backgroundColor: Colors.white,

@@ -7,6 +7,9 @@ import '../../../core/storage/local_storage.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../cart/controllers/cart_controller.dart';
 import '../../order/controllers/order_controller.dart';
+import '../../../data/repositories/product_repository.dart';
+import '../../home/controllers/home_controller.dart';
+import '../../product/controllers/product_controller.dart';
 
 /// Checkout Controller
 class CheckoutController extends GetxController {
@@ -53,6 +56,14 @@ class CheckoutController extends GetxController {
     isLoading.value = true;
     try {
       final cartController = Get.find<CartController>();
+
+      if (cartController.cartItems.isEmpty) {
+        Get.snackbar('Lỗi', 'Giỏ hàng đang trống!',
+            snackPosition: SnackPosition.TOP);
+        isLoading.value = false;
+        return;
+      }
+
       final userId = LocalStorage.userId ?? 'guest';
 
       final order = await _orderRepo.createOrder(
@@ -65,12 +76,26 @@ class CheckoutController extends GetxController {
 
       createdOrder.value = order;
 
+      // Trừ số lượng tồn kho
+      final productRepo = ProductRepository();
+      for (final item in cartController.cartItems) {
+        await productRepo.updateStock(item.productId, item.quantity);
+      }
+
       // Xóa giỏ hàng sau khi đặt thành công
       await cartController.clearCart();
 
       // Reload orders
       if (Get.isRegistered<OrderController>()) {
         Get.find<OrderController>().loadOrders();
+      }
+      
+      // Reload product/home data
+      if (Get.isRegistered<HomeController>()) {
+        Get.find<HomeController>().refreshData();
+      }
+      if (Get.isRegistered<ProductController>()) {
+        Get.find<ProductController>().refreshData();
       }
 
       // Chuyển sang Order Success
@@ -93,6 +118,17 @@ class CheckoutController extends GetxController {
     selectedAddress.value = _addressRepo.getDefaultAddress(addresses);
     Get.back();
     Get.snackbar('Thành công', 'Đã thêm địa chỉ mới!',
+        snackPosition: SnackPosition.TOP);
+  }
+
+  Future<void> updateAddress(AddressModel address) async {
+    addresses.value = await _addressRepo.updateAddress(
+      List.from(addresses),
+      address,
+    );
+    selectedAddress.value = _addressRepo.getDefaultAddress(addresses);
+    Get.back();
+    Get.snackbar('Thành công', 'Đã cập nhật địa chỉ!',
         snackPosition: SnackPosition.TOP);
   }
 

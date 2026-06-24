@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../home/controllers/main_controller.dart';
 import 'package:get/get.dart';
 import '../../../data/models/cart_item_model.dart';
 import '../../../data/models/product_model.dart';
 import '../../../data/repositories/cart_repository.dart';
-
+import '../../../core/routes/app_routes.dart';
+import '../../../core/storage/local_storage.dart';
 /// Cart Controller - quản lý giỏ hàng
 class CartController extends GetxController {
   final CartRepository _repo = CartRepository();
@@ -34,6 +36,11 @@ class CartController extends GetxController {
 
   /// Thêm sản phẩm vào giỏ hàng
   Future<void> addToCart(ProductModel product, int quantity) async {
+    if (!LocalStorage.isLoggedIn) {
+      Get.toNamed(AppRoutes.login);
+      Get.snackbar('Thông báo', 'Vui lòng đăng nhập để thêm vào giỏ hàng!', snackPosition: SnackPosition.TOP);
+      return;
+    }
     try {
       final result = await _repo.addToCart(
         List.from(cartItems),
@@ -41,6 +48,20 @@ class CartController extends GetxController {
         quantity,
       );
       cartItems.value = result;
+      Get.snackbar(
+        '',
+        '🛒 Đã thêm ${product.name} vào giỏ hàng!',
+        snackPosition: SnackPosition.TOP,
+        margin: const EdgeInsets.all(16),
+        duration: const Duration(seconds: 2),
+        onTap: (snack) {
+          if (Get.isRegistered<MainController>()) {
+            Get.find<MainController>().changeTab(2);
+            Get.closeCurrentSnackbar();
+            Get.until((route) => route.settings.name == AppRoutes.main);
+          }
+        },
+      );
     } catch (e) {
       Get.snackbar('Lỗi', e.toString(), snackPosition: SnackPosition.TOP);
       rethrow;
@@ -95,7 +116,7 @@ class CartController extends GetxController {
     Get.snackbar(
       '',
       '🗑️ Đã xóa sản phẩm khỏi giỏ hàng',
-      snackPosition: SnackPosition.BOTTOM,
+      snackPosition: SnackPosition.TOP,
       margin: const EdgeInsets.all(16),
       duration: const Duration(seconds: 2),
     );

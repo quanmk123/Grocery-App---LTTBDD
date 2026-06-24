@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../core/routes/app_routes.dart';
@@ -6,10 +7,35 @@ import '../../../core/routes/app_routes.dart';
 class AuthController extends GetxController {
   final AuthRepository _authRepo = AuthRepository();
 
+  // --- Login controllers ---
+  final loginFormKey = GlobalKey<FormState>();
+  final loginEmailController = TextEditingController();
+  final loginPasswordController = TextEditingController();
+
+  // --- Register controllers ---
+  final registerFormKey = GlobalKey<FormState>();
+  final nameController = TextEditingController();
+  final registerEmailController = TextEditingController();
+  final phoneController = TextEditingController();
+  final registerPasswordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
   final isLoading = false.obs;
   final obscurePassword = true.obs;
   final obscureConfirmPassword = true.obs;
   final errorMessage = ''.obs;
+
+  @override
+  void onClose() {
+    loginEmailController.dispose();
+    loginPasswordController.dispose();
+    nameController.dispose();
+    registerEmailController.dispose();
+    phoneController.dispose();
+    registerPasswordController.dispose();
+    confirmPasswordController.dispose();
+    super.onClose();
+  }
 
   /// Login với email và password
   Future<void> login({

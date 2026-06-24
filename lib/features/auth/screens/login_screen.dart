@@ -12,12 +12,11 @@ class LoginScreen extends GetView<AuthController> {
 
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
-    final emailController = TextEditingController(text: 'user@gmail.com');
-    final passwordController = TextEditingController(text: '123456');
+    final formKey = controller.loginFormKey;
+    final emailController = controller.loginEmailController;
+    final passwordController = controller.loginPasswordController;
 
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -43,21 +42,21 @@ class LoginScreen extends GetView<AuthController> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      const Text(
-                        'Chào mừng trở lại!',
+                      Text(
+                        'Kính chào quý khách!',
                         style: TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimary,
+                          color: Theme.of(context).textTheme.headlineLarge?.color,
                           fontFamily: 'Poppins',
                         ),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
+                      Text(
                         'Đăng nhập để tiếp tục mua sắm',
                         style: TextStyle(
                           fontSize: 14,
-                          color: AppColors.textSecondary,
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
                           fontFamily: 'Poppins',
                         ),
                       ),
@@ -66,42 +65,31 @@ class LoginScreen extends GetView<AuthController> {
                 ),
                 const SizedBox(height: 40),
 
-                // Demo hint
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AppColors.primarySurface,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.primaryLight.withOpacity(0.3)),
-                  ),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.info_outline, color: AppColors.primary, size: 18),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          'Demo: user@gmail.com / 123456',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: AppColors.primary,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-
                 // Email field
                 TextFormField(
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
+                  style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontFamily: 'Poppins'),
+                  decoration: InputDecoration(
                     labelText: 'Email',
                     hintText: 'Nhập email của bạn',
-                    prefixIcon: Icon(Icons.email_outlined, color: AppColors.grey),
+                    prefixIcon: const Icon(Icons.email_outlined, color: AppColors.primary),
+                    filled: true,
+                    fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide.none,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: AppColors.greyLight.withOpacity(0.5), width: 1),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                    ),
+                    floatingLabelStyle: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
                   ),
                   validator: Validators.validateEmail,
                 ),
@@ -111,16 +99,33 @@ class LoginScreen extends GetView<AuthController> {
                 Obx(() => TextFormField(
                       controller: passwordController,
                       obscureText: controller.obscurePassword.value,
+                      style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontFamily: 'Poppins'),
                       decoration: InputDecoration(
                         labelText: 'Mật khẩu',
                         hintText: 'Nhập mật khẩu',
-                        prefixIcon: const Icon(Icons.lock_outline, color: AppColors.grey),
+                        prefixIcon: const Icon(Icons.lock_outline, color: AppColors.primary),
+                        filled: true,
+                        fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(color: AppColors.greyLight.withOpacity(0.5), width: 1),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                        ),
+                        floatingLabelStyle: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
                         suffixIcon: IconButton(
                           icon: Icon(
                             controller.obscurePassword.value
                                 ? Icons.visibility_off_outlined
                                 : Icons.visibility_outlined,
-                            color: AppColors.grey,
+                            color: AppColors.primary,
                           ),
                           onPressed: controller.toggleObscurePassword,
                         ),
@@ -216,6 +221,22 @@ class LoginScreen extends GetView<AuthController> {
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(height: 16),
+                
+                // Skip login
+                Center(
+                  child: TextButton(
+                    onPressed: () => Get.offAllNamed(AppRoutes.main),
+                    child: const Text(
+                      'Bỏ qua đăng nhập',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontFamily: 'Poppins',
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 32),
               ],

@@ -7,7 +7,7 @@ class AddressModel {
   final String district;
   final String ward;
   final String detailAddress;
-  bool isDefault;
+  final bool isDefault;
 
   AddressModel({
     required this.id,

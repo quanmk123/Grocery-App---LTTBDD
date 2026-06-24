@@ -12,7 +12,6 @@ class AddressScreen extends GetView<CheckoutController> {
 
   @override
   Widget build(BuildContext context) {
-    controller.loadAddresses();
     return Scaffold(
       backgroundColor: AppColors.greyBackground,
       appBar: AppBar(
@@ -128,6 +127,17 @@ class AddressScreen extends GetView<CheckoutController> {
                                   ),
                                 ),
                               const Spacer(),
+                              IconButton(
+                                icon: const Icon(Icons.edit_outlined,
+                                    color: AppColors.primary, size: 20),
+                                onPressed: () => Get.toNamed(
+                                  AppRoutes.addAddress,
+                                  arguments: addr,
+                                ),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                              ),
+                              const SizedBox(width: 16),
                               IconButton(
                                 icon: const Icon(Icons.delete_outline,
                                     color: AppColors.error, size: 20),

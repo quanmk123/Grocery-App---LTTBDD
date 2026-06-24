@@ -11,7 +11,9 @@ import '../controllers/cart_controller.dart';
 
 /// Cart Screen
 class CartScreen extends GetView<CartController> {
-  const CartScreen({super.key});
+  final VoidCallback? onHomeTap;
+
+  const CartScreen({super.key, this.onHomeTap});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class CartScreen extends GetView<CartController> {
             title: 'Giỏ hàng trống',
             description: 'Bạn chưa có sản phẩm nào trong giỏ hàng',
             buttonText: 'Tiếp tục mua sắm',
-            onButtonTap: () => Get.back(),
+            onButtonTap: onHomeTap ?? () => Get.back(),
           );
         }
 

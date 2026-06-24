@@ -17,11 +17,8 @@ class SplashController extends GetxController {
     if (!LocalStorage.isOnboardingSeen) {
       // Chưa xem onboarding
       Get.offAllNamed(AppRoutes.onboarding);
-    } else if (!LocalStorage.isLoggedIn) {
-      // Đã xem onboarding nhưng chưa login
-      Get.offAllNamed(AppRoutes.login);
     } else {
-      // Đã login, vào Home
+      // Đã xem onboarding, vào Home xem sản phẩm trước (chưa bắt buộc đăng nhập)
       Get.offAllNamed(AppRoutes.main);
     }
   }

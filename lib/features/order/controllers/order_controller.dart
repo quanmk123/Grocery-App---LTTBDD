@@ -23,6 +23,13 @@ class OrderController extends GetxController {
   /// Lấy đơn hàng theo status
   List<OrderModel> getOrdersByStatus(OrderStatus? status) {
     if (status == null) return orders;
+    if (status == OrderStatus.preparing) {
+      return orders
+          .where((o) =>
+              o.status == OrderStatus.preparing ||
+              o.status == OrderStatus.confirmed)
+          .toList();
+    }
     return orders.where((o) => o.status == status).toList();
   }
 
