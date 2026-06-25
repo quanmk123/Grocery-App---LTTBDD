@@ -26,11 +26,9 @@ class AddAddressScreen extends GetView<CheckoutController> {
     final isDefault = (existingAddress?.isDefault ?? false).obs;
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(isEditing ? 'Sửa địa chỉ' : 'Thêm địa chỉ mới'),
         centerTitle: true,
-        backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),

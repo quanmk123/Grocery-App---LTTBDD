@@ -24,11 +24,9 @@ class ProductListScreen extends GetView<CategoryController> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.greyBackground,
       appBar: AppBar(
         title: Text(category?.name ?? 'Sản phẩm'),
         centerTitle: true,
-        backgroundColor: Colors.white,
         actions: [
           // Sort button
           IconButton(

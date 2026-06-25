@@ -18,13 +18,11 @@ class CartScreen extends GetView<CartController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.greyBackground,
       appBar: AppBar(
         title: Obx(() => Text(
               'Giỏ hàng (${controller.totalItems})',
             )),
         centerTitle: true,
-        backgroundColor: Colors.white,
       ),
       body: Obx(() {
         if (controller.isEmpty) {
@@ -46,25 +44,25 @@ class CartScreen extends GetView<CartController> {
                 itemCount: controller.cartItems.length,
                 itemBuilder: (context, index) {
                   final item = controller.cartItems[index];
-                  return _buildCartItem(item);
+                  return _buildCartItem(context, item);
                 },
               ),
             ),
 
             // Order summary + Checkout button
-            _buildSummary(),
+            _buildSummary(context),
           ],
         );
       }),
     );
   }
 
-  Widget _buildCartItem(item) {
+  Widget _buildCartItem(BuildContext context, item) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -93,11 +91,11 @@ class CartScreen extends GetView<CartController> {
                   item.productName,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Poppins',
-                    color: AppColors.textPrimary,
+                    color: Theme.of(context).textTheme.bodyMedium?.color ?? AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -175,11 +173,11 @@ class CartScreen extends GetView<CartController> {
     );
   }
 
-  Widget _buildSummary() {
+  Widget _buildSummary(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
@@ -190,12 +188,13 @@ class CartScreen extends GetView<CartController> {
       ),
       child: Column(
         children: [
-          _buildSummaryRow('Tạm tính', controller.subtotal),
+          _buildSummaryRow(context, 'Tạm tính', controller.subtotal),
           const SizedBox(height: 8),
-          _buildSummaryRow('Phí vận chuyển', controller.shippingFee),
+          _buildSummaryRow(context, 'Phí vận chuyển', controller.shippingFee),
           if (controller.discount.value > 0) ...[
             const SizedBox(height: 8),
             _buildSummaryRow(
+              context,
               'Giảm giá',
               -controller.discount.value,
               color: AppColors.success,
@@ -238,7 +237,7 @@ class CartScreen extends GetView<CartController> {
     );
   }
 
-  Widget _buildSummaryRow(String label, double amount, {Color? color}) {
+  Widget _buildSummaryRow(BuildContext context, String label, double amount, {Color? color}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -255,7 +254,7 @@ class CartScreen extends GetView<CartController> {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: color ?? AppColors.textPrimary,
+            color: color ?? Theme.of(context).textTheme.bodyMedium?.color ?? AppColors.textPrimary,
             fontFamily: 'Poppins',
           ),
         ),

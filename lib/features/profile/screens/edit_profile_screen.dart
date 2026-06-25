@@ -17,11 +17,9 @@ class EditProfileScreen extends GetView<ProfileController> {
     final phoneCtrl = TextEditingController(text: user?.phone ?? '');
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Thông tin cá nhân'),
         centerTitle: true,
-        backgroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),

@@ -17,9 +17,7 @@ class SearchScreen extends GetView<sc.SearchController> {
     final textController = controller.textController;
 
     return Scaffold(
-      backgroundColor: AppColors.greyBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         title: TextField(
           controller: textController,
           autofocus: true,
@@ -76,7 +74,7 @@ class SearchScreen extends GetView<sc.SearchController> {
 
         // Empty query - show recent searches
         if (!controller.isSearching.value) {
-          return _buildRecentSearches();
+          return _buildRecentSearches(context);
         }
 
         // No results
@@ -100,7 +98,7 @@ class SearchScreen extends GetView<sc.SearchController> {
     );
   }
 
-  Widget _buildRecentSearches() {
+  Widget _buildRecentSearches(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -128,7 +126,7 @@ class SearchScreen extends GetView<sc.SearchController> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: AppColors.greyLight),
                 ),

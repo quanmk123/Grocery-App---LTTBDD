@@ -13,11 +13,8 @@ class AddressScreen extends GetView<CheckoutController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.greyBackground,
       appBar: AppBar(
-        title: const Text('Địa chỉ của tôi'),
-        centerTitle: true,
-        backgroundColor: Colors.white,
+        title: const Text('Sổ địa chỉ'),
       ),
       body: Obx(() {
         if (controller.addresses.isEmpty) {
@@ -37,7 +34,7 @@ class AddressScreen extends GetView<CheckoutController> {
                 margin: const EdgeInsets.only(bottom: 12),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
                     color: isSelected ? AppColors.primary : AppColors.greyLight,

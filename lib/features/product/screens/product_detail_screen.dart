@@ -15,7 +15,6 @@ class ProductDetailScreen extends GetView<ProductController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Obx(() {
         final product = controller.product.value;
         if (product == null) {
@@ -32,13 +31,12 @@ class ProductDetailScreen extends GetView<ProductController> {
                 SliverAppBar(
                   expandedHeight: 300,
                   pinned: true,
-                  backgroundColor: Colors.white,
                   leading: IconButton(
                     icon: Container(
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
@@ -58,7 +56,7 @@ class ProductDetailScreen extends GetView<ProductController> {
                             width: 40,
                             height: 40,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
@@ -74,7 +72,7 @@ class ProductDetailScreen extends GetView<ProductController> {
                               size: 20,
                               color: controller.isFavorite
                                   ? Colors.red
-                                  : AppColors.textPrimary,
+                                  : Theme.of(context).textTheme.bodyMedium?.color ?? AppColors.textPrimary,
                             ),
                           ),
                           onPressed: controller.toggleFavorite,
@@ -119,10 +117,10 @@ class ProductDetailScreen extends GetView<ProductController> {
                         // Name
                         Text(
                           product.name,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w800,
-                            color: AppColors.textPrimary,
+                            color: Theme.of(context).textTheme.titleLarge?.color ?? AppColors.textPrimary,
                             fontFamily: 'Poppins',
                           ),
                         ),
@@ -187,9 +185,9 @@ class ProductDetailScreen extends GetView<ProductController> {
                             const SizedBox(width: 8),
                             Text(
                               '${Formatters.formatRating(product.rating)} (${Formatters.formatNumber(product.reviewCount)} đánh giá)',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 13,
-                                color: AppColors.textSecondary,
+                                color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8) ?? AppColors.textSecondary,
                                 fontFamily: 'Poppins',
                               ),
                             ),
@@ -254,21 +252,21 @@ class ProductDetailScreen extends GetView<ProductController> {
                         const SizedBox(height: 20),
 
                         // Description
-                        const Text(
+                        Text(
                           'Mô tả sản phẩm',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                             fontFamily: 'Poppins',
-                            color: AppColors.textPrimary,
+                            color: Theme.of(context).textTheme.bodyMedium?.color ?? AppColors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           product.description,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
-                            color: AppColors.textSecondary,
+                            color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8) ?? AppColors.textSecondary,
                             height: 1.6,
                             fontFamily: 'Poppins',
                           ),
@@ -289,7 +287,7 @@ class ProductDetailScreen extends GetView<ProductController> {
               child: Container(
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).scaffoldBackgroundColor,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.1),

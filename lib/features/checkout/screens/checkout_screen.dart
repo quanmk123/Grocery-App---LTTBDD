@@ -18,11 +18,8 @@ class CheckoutScreen extends GetView<CheckoutController> {
     final cartController = Get.find<CartController>();
 
     return Scaffold(
-      backgroundColor: AppColors.greyBackground,
       appBar: AppBar(
         title: const Text('Thanh toán'),
-        centerTitle: true,
-        backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -30,6 +27,7 @@ class CheckoutScreen extends GetView<CheckoutController> {
           children: [
             // Delivery Address
             _buildSection(
+              context: context,
               title: 'Địa chỉ giao hàng',
               icon: Icons.location_on_outlined,
               child: _buildAddressSection(),
@@ -38,6 +36,7 @@ class CheckoutScreen extends GetView<CheckoutController> {
 
             // Order Summary
             _buildSection(
+              context: context,
               title: 'Sản phẩm (${cartController.totalItems})',
               icon: Icons.shopping_bag_outlined,
               child: _buildOrderItems(cartController),
@@ -46,6 +45,7 @@ class CheckoutScreen extends GetView<CheckoutController> {
 
             // Delivery Method
             _buildSection(
+              context: context,
               title: 'Phương thức giao hàng',
               icon: Icons.local_shipping_outlined,
               child: _buildDeliveryMethods(),
@@ -54,6 +54,7 @@ class CheckoutScreen extends GetView<CheckoutController> {
 
             // Payment Method
             _buildSection(
+              context: context,
               title: 'Phương thức thanh toán',
               icon: Icons.payment_outlined,
               child: _buildPaymentMethod(),
@@ -62,7 +63,8 @@ class CheckoutScreen extends GetView<CheckoutController> {
 
             // Price Summary
             _buildSection(
-              title: 'Chi tiết thanh toán',
+              context: context,
+              title: 'Tóm tắt đơn hàng',
               icon: Icons.receipt_outlined,
               child: _buildPriceSummary(cartController),
             ),
@@ -92,13 +94,14 @@ class CheckoutScreen extends GetView<CheckoutController> {
   }
 
   Widget _buildSection({
+    required BuildContext context,
     required String title,
     required IconData icon,
     required Widget child,
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(

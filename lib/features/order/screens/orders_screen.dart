@@ -28,11 +28,9 @@ class OrdersScreen extends GetView<OrderController> {
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
-        backgroundColor: AppColors.greyBackground,
         appBar: AppBar(
-          title: const Text('Đơn hàng'),
+          title: const Text('Đơn hàng của tôi'),
           centerTitle: true,
-          backgroundColor: Colors.white,
           bottom: TabBar(
             isScrollable: true,
             indicatorColor: AppColors.primary,
@@ -69,18 +67,18 @@ class OrdersScreen extends GetView<OrderController> {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: orders.length,
-      itemBuilder: (context, index) => _buildOrderCard(orders[index]),
+      itemBuilder: (context, index) => _buildOrderCard(context, orders[index]),
     );
   }
 
-  Widget _buildOrderCard(OrderModel order) {
+  Widget _buildOrderCard(BuildContext context, OrderModel order) {
     return GestureDetector(
       onTap: () => Get.toNamed(AppRoutes.orderDetail, arguments: order),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(

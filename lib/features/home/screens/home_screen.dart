@@ -79,12 +79,12 @@ class HomeScreen extends GetView<HomeController> {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: AppColors.greyExtraLight,
+              color: Theme.of(context).cardTheme.color ?? AppColors.greyExtraLight,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.notifications_none_rounded,
-              color: AppColors.textPrimary,
+              color: Theme.of(context).iconTheme.color ?? AppColors.textPrimary,
               size: 24,
             ),
           ),
@@ -291,54 +291,7 @@ class HomeScreen extends GetView<HomeController> {
               itemCount: controller.categories.length,
               itemBuilder: (context, index) {
                 final cat = controller.categories[index];
-                return GestureDetector(
-                  onTap: () => Get.toNamed(
-                    AppRoutes.productList,
-                    arguments: cat,
-                  ),
-                  child: Container(
-                    width: 75,
-                    margin: const EdgeInsets.only(right: 12),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.06),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Text(
-                              cat.emoji,
-                              style: const TextStyle(fontSize: 28),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          cat.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+                return _HomeCategoryCard(cat: cat);
               },
             ),
           ),
@@ -531,5 +484,63 @@ class HomeScreen extends GetView<HomeController> {
         ],
       );
     });
+  }
+}
+
+class _HomeCategoryCard extends StatelessWidget {
+  final dynamic cat;
+
+  const _HomeCategoryCard({required this.cat});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Get.toNamed(
+        AppRoutes.productList,
+        arguments: cat,
+      ),
+      child: Container(
+        width: 75,
+        margin: const EdgeInsets.only(right: 12),
+        child: Column(
+          children: [
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.06),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Text(
+                  cat.emoji,
+                  style: const TextStyle(fontSize: 28),
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              cat.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 11,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w500,
+                color: Theme.of(context).textTheme.bodyMedium?.color ?? AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

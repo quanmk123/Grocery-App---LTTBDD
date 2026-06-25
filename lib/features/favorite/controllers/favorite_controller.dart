@@ -4,6 +4,7 @@ import '../../../data/models/product_model.dart';
 import '../../../data/repositories/favorite_repository.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/storage/local_storage.dart';
+
 /// Favorite Controller
 class FavoriteController extends GetxController {
   final FavoriteRepository _repo = FavoriteRepository();
@@ -27,7 +28,8 @@ class FavoriteController extends GetxController {
   Future<void> toggleFavorite(ProductModel product) async {
     if (!LocalStorage.isLoggedIn) {
       Get.toNamed(AppRoutes.login);
-      Get.snackbar('Thông báo', 'Vui lòng đăng nhập để thêm vào yêu thích!', snackPosition: SnackPosition.TOP);
+      Get.snackbar('Thông báo', 'Vui lòng đăng nhập để thêm vào yêu thích!',
+          snackPosition: SnackPosition.TOP);
       return;
     }
     favoriteIds.value =
@@ -38,8 +40,8 @@ class FavoriteController extends GetxController {
     Get.snackbar(
       '',
       isFav ? '❤️ Đã thêm vào yêu thích!' : '💔 Đã xóa khỏi yêu thích!',
-      snackPosition: SnackPosition.BOTTOM,
-      margin: const EdgeInsets.all(16),
+      snackPosition: SnackPosition.TOP,
+      margin: const EdgeInsets.only(top: 45, left: 16, right: 16),
       duration: const Duration(seconds: 2),
     );
   }

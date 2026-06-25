@@ -9,6 +9,7 @@ import '../../../data/models/user_model.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/storage/local_storage.dart';
+
 /// Home Controller - quản lý dữ liệu màn hình Home
 class HomeController extends GetxController {
   final _productRepo = ProductRepository();
@@ -89,7 +90,8 @@ class HomeController extends GetxController {
   Future<void> toggleFavorite(ProductModel product) async {
     if (!LocalStorage.isLoggedIn) {
       Get.toNamed(AppRoutes.login);
-      Get.snackbar('Thông báo', 'Vui lòng đăng nhập để thêm vào yêu thích!', snackPosition: SnackPosition.TOP);
+      Get.snackbar('Thông báo', 'Vui lòng đăng nhập để thêm vào yêu thích!',
+          snackPosition: SnackPosition.TOP);
       return;
     }
     final repo = FavoriteRepository();
@@ -103,10 +105,12 @@ class HomeController extends GetxController {
 
     Get.snackbar(
       '',
-      product.isFavorite ? '❤️ Đã thêm vào yêu thích!' : '💔 Đã xóa khỏi yêu thích!',
-      snackPosition: SnackPosition.BOTTOM,
-      margin: const EdgeInsets.all(16),
-      duration: const Duration(seconds: 2),
+      favoriteIds.contains(product.id)
+          ? '❤️ Đã thêm vào yêu thích!'
+          : '💔 Đã xóa khỏi yêu thích!',
+      snackPosition: SnackPosition.TOP,
+      margin: const EdgeInsets.only(top: 45, left: 16, right: 16),
+      duration: const Duration(seconds: 1),
     );
   }
 
@@ -114,7 +118,8 @@ class HomeController extends GetxController {
   Future<void> quickAddToCart(ProductModel product) async {
     if (!LocalStorage.isLoggedIn) {
       Get.toNamed(AppRoutes.login);
-      Get.snackbar('Thông báo', 'Vui lòng đăng nhập để thêm vào giỏ hàng!', snackPosition: SnackPosition.TOP);
+      Get.snackbar('Thông báo', 'Vui lòng đăng nhập để thêm vào giỏ hàng!',
+          snackPosition: SnackPosition.TOP);
       return;
     }
     if (product.isOutOfStock) return;

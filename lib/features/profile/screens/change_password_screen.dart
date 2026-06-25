@@ -20,11 +20,9 @@ class ChangePasswordScreen extends GetView<ProfileController> {
     final obscureConfirm = true.obs;
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Đổi mật khẩu'),
         centerTitle: true,
-        backgroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),

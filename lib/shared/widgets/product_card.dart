@@ -27,7 +27,7 @@ class ProductCard extends StatelessWidget {
       onTap: () => Get.toNamed(AppRoutes.productDetail, arguments: product),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -112,7 +112,7 @@ class ProductCard extends StatelessWidget {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
@@ -143,10 +143,10 @@ class ProductCard extends StatelessWidget {
                     product.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                      color: Theme.of(context).textTheme.bodyMedium?.color ?? AppColors.textPrimary,
                       fontFamily: 'Poppins',
                       height: 1.3,
                     ),
@@ -268,7 +268,7 @@ class ProductCardHorizontal extends StatelessWidget {
       child: Container(
         width: 150,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -322,8 +322,8 @@ class ProductCardHorizontal extends StatelessWidget {
                     child: Container(
                       width: 28,
                       height: 28,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
                         shape: BoxShape.circle,
                       ),
                       child: Icon(

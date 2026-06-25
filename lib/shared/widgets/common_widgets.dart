@@ -37,7 +37,7 @@ class EmptyStateWidget extends StatelessWidget {
               title,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: Theme.of(context).textTheme.bodyLarge?.color ?? AppColors.textPrimary,
                   ),
               textAlign: TextAlign.center,
             ),
@@ -45,7 +45,7 @@ class EmptyStateWidget extends StatelessWidget {
             Text(
               description,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7) ?? AppColors.textSecondary,
                     height: 1.5,
                   ),
               textAlign: TextAlign.center,

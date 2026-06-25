@@ -15,7 +15,6 @@ class OrderSuccessScreen extends StatelessWidget {
     final order = Get.arguments as OrderModel?;
 
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -56,22 +55,28 @@ class OrderSuccessScreen extends StatelessWidget {
               const SizedBox(height: 32),
 
               // Title
-              const Text(
-                'Đặt hàng thành công! 🎉',
+              Text(
+                'Đặt hàng thành công!',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
                   fontFamily: 'Poppins',
-                  color: AppColors.textPrimary,
+                  color: Theme.of(context).textTheme.headlineSmall?.color ??
+                      AppColors.textPrimary,
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
-              const Text(
+              Text(
                 'Đơn hàng của bạn đã được đặt thành công.\nChúng tôi sẽ xử lý ngay!',
                 style: TextStyle(
                   fontSize: 14,
-                  color: AppColors.textSecondary,
+                  color: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.color
+                          ?.withOpacity(0.8) ??
+                      AppColors.textSecondary,
                   fontFamily: 'Poppins',
                   height: 1.6,
                 ),
@@ -85,21 +90,22 @@ class OrderSuccessScreen extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: AppColors.greyExtraLight,
+                    color: Theme.of(context).cardTheme.color ??
+                        AppColors.greyExtraLight,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(
                     children: [
-                      _infoRow('Mã đơn hàng', order.id),
+                      _infoRow(context, 'Mã đơn hàng', order.id),
                       const SizedBox(height: 12),
-                      _infoRow(
-                          'Tổng tiền',
+                      _infoRow(context, 'Tổng tiền',
                           Formatters.formatCurrency(order.total),
                           valueColor: AppColors.primary),
                       const SizedBox(height: 12),
-                      _infoRow('Thanh toán', 'COD - Tiền mặt khi nhận hàng'),
+                      _infoRow(context, 'Thanh toán',
+                          'COD - Tiền mặt khi nhận hàng'),
                       const SizedBox(height: 12),
-                      _infoRow('Trạng thái', 'Chờ xác nhận',
+                      _infoRow(context, 'Trạng thái', 'Chờ xác nhận',
                           valueColor: AppColors.statusPending),
                     ],
                   ),
@@ -133,15 +139,21 @@ class OrderSuccessScreen extends StatelessWidget {
     );
   }
 
-  Widget _infoRow(String label, String value, {Color? valueColor}) {
+  Widget _infoRow(BuildContext context, String label, String value,
+      {Color? valueColor}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 13,
-            color: AppColors.textSecondary,
+            color: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.color
+                    ?.withOpacity(0.8) ??
+                AppColors.textSecondary,
             fontFamily: 'Poppins',
           ),
         ),
@@ -152,7 +164,9 @@ class OrderSuccessScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: valueColor ?? AppColors.textPrimary,
+              color: valueColor ??
+                  Theme.of(context).textTheme.bodyMedium?.color ??
+                  AppColors.textPrimary,
               fontFamily: 'Poppins',
             ),
           ),

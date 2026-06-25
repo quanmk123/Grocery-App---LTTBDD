@@ -21,38 +21,35 @@ class OrderDetailScreen extends GetView<OrderController> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.greyBackground,
       appBar: AppBar(
-        title: Text('Đơn hàng #${order.id}'),
-        centerTitle: true,
-        backgroundColor: Colors.white,
+        title: const Text('Chi tiết đơn hàng'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             // Status Card
-            _buildStatusCard(order),
+            _buildStatusCard(context, order),
             const SizedBox(height: 16),
 
             // Delivery address
-            _buildSection('Địa chỉ giao hàng', Icons.location_on_outlined,
-                _buildAddressInfo(order)),
+            _buildSection(context, 'Địa chỉ giao hàng', Icons.location_on_outlined,
+                _buildAddressInfo(context, order)),
             const SizedBox(height: 16),
 
             // Products
-            _buildSection('Sản phẩm (${order.totalItems})',
-                Icons.shopping_bag_outlined, _buildProducts(order)),
+            _buildSection(context, 'Sản phẩm (${order.totalItems})',
+                Icons.shopping_bag_outlined, _buildProducts(context, order)),
             const SizedBox(height: 16),
 
             // Payment info
-            _buildSection(
-                'Thông tin thanh toán', Icons.payment_outlined, _buildPayment(order)),
+            _buildSection(context,
+                'Thông tin thanh toán', Icons.payment_outlined, _buildPayment(context, order)),
             const SizedBox(height: 16),
 
             // Price summary
-            _buildSection(
-                'Chi tiết đơn hàng', Icons.receipt_outlined, _buildPriceSummary(order)),
+            _buildSection(context,
+                'Chi tiết đơn hàng', Icons.receipt_outlined, _buildPriceSummary(context, order)),
             const SizedBox(height: 24),
 
             // Action buttons
@@ -69,7 +66,7 @@ class OrderDetailScreen extends GetView<OrderController> {
     );
   }
 
-  Widget _buildStatusCard(OrderModel order) {
+  Widget _buildStatusCard(BuildContext context, OrderModel order) {
     Color statusColor;
     switch (order.status) {
       case OrderStatus.pending: statusColor = AppColors.statusPending; break;
@@ -85,7 +82,7 @@ class OrderDetailScreen extends GetView<OrderController> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -137,10 +134,10 @@ class OrderDetailScreen extends GetView<OrderController> {
     }
   }
 
-  Widget _buildSection(String title, IconData icon, Widget child) {
+  Widget _buildSection(BuildContext context, String title, IconData icon, Widget child) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -153,11 +150,7 @@ class OrderDetailScreen extends GetView<OrderController> {
                 const SizedBox(width: 8),
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    fontFamily: 'Poppins',
-                  ),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, fontFamily: 'Poppins', color: Theme.of(context).textTheme.bodyMedium?.color ?? AppColors.textPrimary),
                 ),
               ],
             ),
@@ -169,28 +162,26 @@ class OrderDetailScreen extends GetView<OrderController> {
     );
   }
 
-  Widget _buildAddressInfo(OrderModel order) {
+  Widget _buildAddressInfo(BuildContext context, OrderModel order) {
     final a = order.address;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           a.fullName,
-          style: const TextStyle(
-            fontSize: 14, fontWeight: FontWeight.w700, fontFamily: 'Poppins',
-          ),
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, fontFamily: 'Poppins', color: Theme.of(context).textTheme.bodyMedium?.color ?? AppColors.textPrimary),
         ),
         const SizedBox(height: 4),
         Text(a.phone,
-            style: const TextStyle(fontSize: 13, color: AppColors.textSecondary, fontFamily: 'Poppins')),
+            style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8) ?? AppColors.textSecondary, fontFamily: 'Poppins')),
         const SizedBox(height: 4),
         Text(a.fullAddress,
-            style: const TextStyle(fontSize: 13, color: AppColors.textSecondary, fontFamily: 'Poppins', height: 1.5)),
+            style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8) ?? AppColors.textSecondary, fontFamily: 'Poppins', height: 1.5)),
       ],
     );
   }
 
-  Widget _buildProducts(OrderModel order) {
+  Widget _buildProducts(BuildContext context, OrderModel order) {
     return Column(
       children: order.items.map((item) => Padding(
         padding: const EdgeInsets.only(bottom: 12),
@@ -198,18 +189,18 @@ class OrderDetailScreen extends GetView<OrderController> {
           children: [
             Text(
               '${item.quantity}x',
-              style: const TextStyle(fontSize: 13, color: AppColors.textHint, fontFamily: 'Poppins'),
+              style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6) ?? AppColors.textHint, fontFamily: 'Poppins'),
             ),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
                 item.productName,
-                style: const TextStyle(fontSize: 13, fontFamily: 'Poppins'),
+                style: TextStyle(fontSize: 13, fontFamily: 'Poppins', color: Theme.of(context).textTheme.bodyMedium?.color ?? AppColors.textPrimary),
               ),
             ),
             Text(
               Formatters.formatCurrency(item.total),
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, fontFamily: 'Poppins'),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, fontFamily: 'Poppins', color: Theme.of(context).textTheme.bodyMedium?.color ?? AppColors.textPrimary),
             ),
           ],
         ),
@@ -217,33 +208,32 @@ class OrderDetailScreen extends GetView<OrderController> {
     );
   }
 
-  Widget _buildPayment(OrderModel order) {
+  Widget _buildPayment(BuildContext context, OrderModel order) {
     return Column(
       children: [
-        _infoRow('Phương thức giao hàng', order.deliveryMethod.label),
+        _infoRow(context, 'Phương thức giao hàng', order.deliveryMethod.label),
         const SizedBox(height: 8),
-        _infoRow('Phương thức thanh toán', 'COD - Tiền mặt'),
+        _infoRow(context, 'Phương thức thanh toán', 'COD - Tiền mặt'),
       ],
     );
   }
 
-  Widget _buildPriceSummary(OrderModel order) {
+  Widget _buildPriceSummary(BuildContext context, OrderModel order) {
     return Column(
       children: [
-        _infoRow('Tạm tính', Formatters.formatCurrency(order.subtotal)),
+        _infoRow(context, 'Tạm tính', Formatters.formatCurrency(order.subtotal)),
         const SizedBox(height: 8),
-        _infoRow('Phí vận chuyển', Formatters.formatCurrency(order.shippingFee)),
+        _infoRow(context, 'Phí vận chuyển', Formatters.formatCurrency(order.shippingFee)),
         if (order.discount > 0) ...[
           const SizedBox(height: 8),
-          _infoRow('Giảm giá', '-${Formatters.formatCurrency(order.discount)}',
+          _infoRow(context, 'Giảm giá', '-${Formatters.formatCurrency(order.discount)}',
               valueColor: AppColors.success),
         ],
         const Divider(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Tổng cộng',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, fontFamily: 'Poppins')),
+            Text('Tổng cộng', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, fontFamily: 'Poppins', color: Theme.of(context).textTheme.bodyMedium?.color ?? AppColors.textPrimary)),
             Text(
               Formatters.formatCurrency(order.total),
               style: const TextStyle(
@@ -281,19 +271,19 @@ class OrderDetailScreen extends GetView<OrderController> {
     );
   }
 
-  Widget _infoRow(String label, String value, {Color? valueColor}) {
+  Widget _infoRow(BuildContext context, String label, String value, {Color? valueColor}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label,
-            style: const TextStyle(fontSize: 13, color: AppColors.textSecondary, fontFamily: 'Poppins')),
+            style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8) ?? AppColors.textSecondary, fontFamily: 'Poppins')),
         Flexible(
           child: Text(value,
               textAlign: TextAlign.right,
               style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: valueColor ?? AppColors.textPrimary,
+                  color: valueColor ?? Theme.of(context).textTheme.bodyMedium?.color ?? AppColors.textPrimary,
                   fontFamily: 'Poppins')),
         ),
       ],

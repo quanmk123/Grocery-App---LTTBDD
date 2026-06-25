@@ -14,7 +14,7 @@ class ProfileScreen extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     controller.loadUser();
     return Scaffold(
-      backgroundColor: AppColors.greyBackground,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -23,45 +23,52 @@ class ProfileScreen extends GetView<ProfileController> {
               _buildHeader(),
               const SizedBox(height: 16),
               // Menu sections
-              _buildSection('Tài khoản', Icons.person_outline, [
+              _buildSection(context, 'Tài khoản', Icons.person_outline, [
                 _buildMenuItem(
+                  context: context,
                   icon: Icons.edit_outlined,
                   title: 'Thông tin cá nhân',
                   onTap: () => Get.toNamed(AppRoutes.editProfile),
                 ),
                 _buildMenuItem(
+                  context: context,
                   icon: Icons.lock_outline,
                   title: 'Đổi mật khẩu',
                   onTap: () => Get.toNamed(AppRoutes.changePassword),
                 ),
                 _buildMenuItem(
+                  context: context,
                   icon: Icons.location_on_outlined,
                   title: 'Địa chỉ của tôi',
                   onTap: () => Get.toNamed(AppRoutes.address),
                 ),
               ]),
               const SizedBox(height: 12),
-              _buildSection('Mua sắm', Icons.shopping_bag_outlined, [
+              _buildSection(context, 'Mua sắm', Icons.shopping_bag_outlined, [
                 _buildMenuItem(
+                  context: context,
                   icon: Icons.receipt_long_outlined,
                   title: 'Đơn hàng của tôi',
                   onTap: () => Get.toNamed(AppRoutes.orders),
                 ),
                 _buildMenuItem(
+                  context: context,
                   icon: Icons.favorite_outline,
                   title: 'Sản phẩm yêu thích',
-                  onTap: () => Get.to(() => const FavoriteScreen()),
+                  onTap: () => Get.toNamed(AppRoutes.favorite),
                 ),
               ]),
               const SizedBox(height: 12),
-              _buildSection('Cài đặt', Icons.settings_outlined, [
+              _buildSection(context, 'Cài đặt', Icons.settings_outlined, [
                 _buildMenuItemSwitch(
+                  context: context,
                   icon: Icons.dark_mode_outlined,
                   title: 'Chế độ tối',
                   value: controller.isDarkMode,
                   onChanged: (_) => controller.toggleTheme(),
                 ),
                 _buildMenuItemSwitch(
+                  context: context,
                   icon: Icons.notifications_outlined,
                   title: 'Thông báo',
                   value: controller.notificationsEnabled,
@@ -69,8 +76,9 @@ class ProfileScreen extends GetView<ProfileController> {
                 ),
               ]),
               const SizedBox(height: 12),
-              _buildSection('Hệ thống', Icons.more_horiz, [
+              _buildSection(context, 'Hệ thống', Icons.more_horiz, [
                 _buildMenuItem(
+                  context: context,
                   icon: Icons.logout,
                   title: 'Đăng xuất',
                   iconColor: AppColors.error,
@@ -155,11 +163,11 @@ class ProfileScreen extends GetView<ProfileController> {
     );
   }
 
-  Widget _buildSection(String title, IconData icon, List<Widget> items) {
+  Widget _buildSection(BuildContext context, String title, IconData icon, List<Widget> items) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -191,6 +199,7 @@ class ProfileScreen extends GetView<ProfileController> {
   }
 
   Widget _buildMenuItem({
+    required BuildContext context,
     required IconData icon,
     required String title,
     required VoidCallback onTap,
@@ -224,7 +233,7 @@ class ProfileScreen extends GetView<ProfileController> {
                 style: TextStyle(
                   fontSize: 14,
                   fontFamily: 'Poppins',
-                  color: textColor ?? AppColors.textPrimary,
+                  color: textColor ?? Theme.of(context).textTheme.bodyMedium?.color ?? AppColors.textPrimary,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -242,6 +251,7 @@ class ProfileScreen extends GetView<ProfileController> {
   }
 
   Widget _buildMenuItemSwitch({
+    required BuildContext context,
     required IconData icon,
     required String title,
     required RxBool value,
@@ -264,10 +274,11 @@ class ProfileScreen extends GetView<ProfileController> {
           Expanded(
             child: Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w500,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
           ),

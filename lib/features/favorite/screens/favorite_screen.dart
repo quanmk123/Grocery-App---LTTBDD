@@ -17,11 +17,8 @@ class FavoriteScreen extends GetView<FavoriteController> {
     controller.loadFavorites();
 
     return Scaffold(
-      backgroundColor: AppColors.greyBackground,
       appBar: AppBar(
         title: const Text('Yêu thích'),
-        centerTitle: true,
-        backgroundColor: Colors.white,
       ),
       body: Obx(() {
         if (controller.favoriteProducts.isEmpty) {

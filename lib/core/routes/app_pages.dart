@@ -25,6 +25,8 @@ import '../../features/order/bindings/order_binding.dart';
 import '../../features/profile/screens/change_password_screen.dart';
 import '../../features/profile/screens/edit_profile_screen.dart';
 import '../../features/profile/bindings/profile_binding.dart';
+import '../../features/favorite/screens/favorite_screen.dart';
+import '../../features/favorite/bindings/favorite_binding.dart';
 import 'app_routes.dart';
 
 /// App pages - định nghĩa tất cả màn hình và bindings
@@ -94,6 +96,13 @@ class AppPages {
       name: AppRoutes.search,
       page: () => const SearchScreen(),
       binding: SearchBinding(),
+      transition: Transition.rightToLeft,
+    ),
+    // Favorite
+    GetPage(
+      name: AppRoutes.favorite,
+      page: () => const FavoriteScreen(),
+      binding: FavoriteBinding(),
       transition: Transition.rightToLeft,
     ),
 
